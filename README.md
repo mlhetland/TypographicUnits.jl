@@ -39,5 +39,5 @@ julia> (6pt + 12em)/2
 ```
 
 There are currently separate length-like dimensions defined for the units
-`em`, `ex` and `px`. (The last relative unit defined, the `en`, is defind as
-`em//2`, and thus shares its dimension.)
+`em`, `ex` and `px`. (The last relative unit defined, the `en`, is set to half
+an `em`, and thus shares its dimension.)
