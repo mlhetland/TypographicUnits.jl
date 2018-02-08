@@ -1,4 +1,4 @@
-# UnitfulTypo
+# TypographicUnits
 
 A supplemental units package for
 [Unitful](https://github.com/ajkeller34/Unitful.jl), for dealing with
@@ -12,8 +12,8 @@ julia> 1pt + 1pc |> bp
 For absolute units like `pt`, `dd`, etc., that's basically all there is to it.
 Relative units like the `em` provide more of a challenge, as their definition
 depends on the current font, wherever a given measurement is to be used.
-`UnitfulTypo` makes no assumptions here, and rather treats incommensurable
-relative units as separate “length-like” dimensions.
+`TypographicUnits` makes no assumptions here, and rather treats
+incommensurable relative units as separate “length-like” dimensions.
 
 Thus, where `1pc - 6pt` yields `6pt`, for example, the relative units don't
 mix:

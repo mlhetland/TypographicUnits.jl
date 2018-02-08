@@ -1,5 +1,5 @@
 __precompile__()
-module UnitfulTypo
+module TypographicUnits
 export pt, bp, pc, dd, cc, nd, nc, sp, em, ex, px, en
 
 using Unitful
@@ -124,7 +124,7 @@ const localunits = Unitful.basefactors
 function __init__()
 
     merge!(Unitful.basefactors, localunits)
-    Unitful.register(UnitfulTypo)
+    Unitful.register(TypographicUnits)
 
     # Seems to be required (Unitful 0.7.0), even though this is called by
     # @refunit:

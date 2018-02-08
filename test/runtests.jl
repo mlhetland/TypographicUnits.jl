@@ -1,4 +1,4 @@
-using UnitfulTypo
+using TypographicUnits
 using Base.Test
 
 const ABSOLUTE = pt, bp, pc, dd, cc, nd, nc, sp
