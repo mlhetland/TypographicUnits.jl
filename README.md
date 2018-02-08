@@ -33,7 +33,7 @@ julia> 1.0pt + 1em
 
 They can also be multiplied by (or divided by) real numbers:
 
-```
+```jl
 julia> (6pt + 12em)/2
 3.0 pt + 6.0 em
 ```
