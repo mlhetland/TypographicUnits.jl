@@ -12,7 +12,7 @@ import Base: +, *, -, /, show
 # (Based on LaTeX values, cf. https://en.wikibooks.org/wiki/LaTeX/Lengths)
 
 @unit pt "pt" Point       100inch//7227  false
-@unit bp "bp" BigPoint       inch//72   false
+@unit bp "bp" BigPoint       inch//72    false
 @unit pc "pc" Pica           12pt        false
 @unit dd "dd" Didôt        1238pt//1157  false
 @unit cc "cc" Cîcero           dd//12    false
@@ -87,6 +87,18 @@ for S in LengthNames, T in LengthNames
 end
 
 
+## Mathematical functions ####################################################
+
+# For now, just float. Any other functions that make sense here would be
+# easy enough to add.
+
+import Base: float
+
+for func in [:float]
+    @eval $func(x::MixedLength) = MixedLength($func.(getfields(x))...)
+end
+
+
 ## Pretty-printing ###########################################################
 
 function show(io::IO, x::M)
@@ -129,6 +141,10 @@ function __init__()
     # Seems to be required (Unitful 0.7.0), even though this is called by
     # @refunit:
     Unitful.preferunits(em, ex, px)
+
+    # We probably don't want to convert to meters if we mix in mm or cm.
+    # (Requires that this is imported before, say, Unitful.DefaultSymbols.)
+    Unitful.preferunits(pt)
 
 end
 

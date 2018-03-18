@@ -1,4 +1,5 @@
 using TypographicUnits
+using Unitful.DefaultSymbols
 using Base.Test
 
 const ABSOLUTE = pt, bp, pc, dd, cc, nd, nc, sp
@@ -27,3 +28,9 @@ show(io, 3.1pt - 4.3ex)
 
 show(io, 3px + 4.0em)
 @test result() == "4.0 em + 3.0 px"
+
+show(io, 1cm + 1pt)
+@test result() == "7481//254 pt"
+
+showcompact(io, float(3cm + 4pt + 4em))
+@test result() == "89.3583 pt+4.0 em"
