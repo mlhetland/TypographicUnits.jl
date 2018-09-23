@@ -1,6 +1,6 @@
 using TypographicUnits
 using Unitful.DefaultSymbols
-using Base.Test
+using Test
 
 const ABSOLUTE = pt, bp, pc, dd, cc, nd, nc, sp
 const RELATIVE = em, ex, px, en
@@ -32,5 +32,5 @@ show(io, 3px + 4.0em)
 show(io, 1cm + 1pt)
 @test result() == "7481//254 pt"
 
-showcompact(io, float(3cm + 4pt + 4em))
+show(IOContext(io, :compact => true), float(3cm + 4pt + 4em))
 @test result() == "89.3583 pt+4.0 em"
