@@ -40,21 +40,24 @@ using Unitful: inch, Length
 
 ## A mixture of incommensurable length-like values ###########################
 
-struct MixedLength{T <: Real,
-    L<:Length{T}, M<:EmLength{T}, X<:ExLength{T}, P<:PxLength{T}} <: Number
+struct MixedLength{
+    L <: Length{<: Real},
+    M <: EmLength{<: Real},
+    X <: ExLength{<: Real},
+    P<: PxLength{<: Real}
+} <: Number
     len::L
     ems::M
     exs::X
     pxs::P
 end
 
-MixedLength(len::L, ems::M, exs::X, pxs::P) where {T <: Real,
-    L <: Length{T}, M <: EmLength{T}, X <: ExLength{T}, P <: PxLength{T}} =
-    MixedLength{T, L, M, X, P}(len, ems, exs, pxs)
-
-MixedLength(len::L, ems::M, exs::X, pxs::P) where
-    {L <: Length, M <: EmLength, X <: ExLength, P <: PxLength} =
-    MixedLength(_promote(len, ems, exs, pxs)...)
+MixedLength(len::L, ems::M, exs::X, pxs::P) where {
+    L <: Length{<: Real},
+    M <: EmLength{<: Real},
+    X <: ExLength{<: Real},
+    P <: PxLength{<: Real}} =
+    MixedLength{L, M, X, P}(len, ems, exs, pxs)
 
 const M = MixedLength
 getfields(x::M) = x.len, x.ems, x.exs, x.pxs
@@ -128,29 +131,22 @@ end
 
 ##############################################################################
 
-# Currently (v0.7.0), the Unitful.jl promotion implementation doesn't work
-# for more than three values [1], so here's a local alternative, sidestepping
-# much of the promotion machinery.
+# Register the TypographicUnits.jl extension to Unitful.jl [1]
 #
-# [1]: https://github.com/ajkeller34/Unitful.jl/issues/119
-_promote(x...) = (T=promote_type(map(typeof, x)...); map(y->convert(T, y), x))
-
-##############################################################################
-
-const localunits = Unitful.basefactors
+# [1]: https://painterqubits.github.io/Unitful.jl/stable/extending/
+const localunits = copy(Unitful.basefactors)
+const localpromotion = copy(Unitful.promotion)
 function __init__()
-
     merge!(Unitful.basefactors, localunits)
-    Unitful.register(TypographicUnits)
+    # TODO: do we need this promotion step?
+    merge!(Unitful.promotion, localpromotion)  # only if you've used @dimension
 
-    # Seems to be required (Unitful 0.7.0), even though this is called by
-    # @refunit:
-    Unitful.preferunits(em, ex, px)
+    # Register extension to Unitful.jl
+    Unitful.register(TypographicUnits)
 
     # We probably don't want to convert to meters if we mix in mm or cm.
     # (Requires that this is imported before, say, Unitful.DefaultSymbols.)
     Unitful.preferunits(pt)
-
 end
 
 end

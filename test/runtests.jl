@@ -414,7 +414,7 @@ end
         @test result() == "3.1 pt - 4.3 ex"
 
         show(io, 3px + 4.0em)
-        @test result() == "4.0 em + 3.0 px"
+        @test result() == "4.0 em + 3 px"
 
         show(io, 1cm + 1pt)
         @test result() == "7481//254 pt"
