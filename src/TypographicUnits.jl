@@ -41,10 +41,10 @@ using Unitful: inch, Length
 ## A mixture of incommensurable length-like values ###########################
 
 struct MixedLength{
-    L <: Length{<: Real},
+    L <: Length{<:Real},
     M <: EmLength{<: Real},
     X <: ExLength{<: Real},
-    P<: PxLength{<: Real}
+    P<: PxLength{<: Real},
 } <: Number
     len::L
     ems::M
@@ -53,43 +53,43 @@ struct MixedLength{
 end
 
 MixedLength(len::L, ems::M, exs::X, pxs::P) where {
-    L <: Length{<: Real},
+    L <: Length{<:Real},
     M <: EmLength{<: Real},
     X <: ExLength{<: Real},
-    P <: PxLength{<: Real}} =
+    P <: PxLength{<: Real},
+} =
     MixedLength{L, M, X, P}(len, ems, exs, pxs)
 
-const M = MixedLength
-getfields(x::M) = x.len, x.ems, x.exs, x.pxs
+getfields(x::MixedLength) = x.len, x.ems, x.exs, x.pxs
 
-M(x::Length)   = M(  x, 0em, 0ex, 0px)
-M(x::EmLength) = M(0pt,   x, 0ex, 0px)
-M(x::ExLength) = M(0pt, 0em,   x, 0px)
-M(x::PxLength) = M(0pt, 0em, 0ex,   x)
+MixedLength(x::Length)   = MixedLength(x, 0em, 0ex, 0px)
+MixedLength(x::EmLength) = MixedLength(0pt, x, 0ex, 0px)
+MixedLength(x::ExLength) = MixedLength(0pt, 0em, x, 0px)
+MixedLength(x::PxLength) = MixedLength(0pt, 0em, 0ex, x)
 
 
 ## Some limited mixed arithmetic #############################################
 
 import Base: +, *, -, /
 
-+(x::M, y::M)    = M(getfields(x) .+ getfields(y)...)
--(x::M, y::M)    = M(getfields(x) .- getfields(y)...)
--(x::M)          = M(.- getfields(x)...)
-*(x::Real, y::M) = M(x .* getfields(y)...)
++(x::MixedLength, y::MixedLength) = MixedLength(getfields(x) .+ getfields(y)...)
+-(x::MixedLength, y::MixedLength) = MixedLength(getfields(x) .- getfields(y)...)
+-(x::MixedLength)                 = MixedLength(.- getfields(x)...)
+*(x::Real, y::MixedLength)        = MixedLength(x .* getfields(y)...)
 
-*(x::M, y::Real) = y * x
-/(x::M, y::Real) = x * inv(y)
+*(x::MixedLength, y::Real) = y * x
+/(x::MixedLength, y::Real) = x * inv(y)
 
 # Unitful.jl already uses the promotion mechanism on the generated
 # unit-related types, so promoting two incommensurable length-like quantities
 # to a MixedLength may not be altogether straightforward. Instead, we'll just
 # hard-code the operators we need:
 
-const TYPO_LENGTHS = (:Length, :EmLength, :ExLength, :PxLength, :M)
+const TYPO_LENGTHS = (:Length, :EmLength, :ExLength, :PxLength, :MixedLength)
 for S in TYPO_LENGTHS, T in TYPO_LENGTHS
     S == T && continue
-    @eval +(x::$S, y::$T) = M(x) + M(y)
-    @eval -(x::$S, y::$T) = M(x) - M(y)
+    @eval +(x::$S, y::$T) = MixedLength(x) + MixedLength(y)
+    @eval -(x::$S, y::$T) = MixedLength(x) - MixedLength(y)
 end
 
 
@@ -109,7 +109,7 @@ end
 
 import Base: show
 
-function show(io::IO, x::M)
+function show(io::IO, x::MixedLength)
     compact = get(io, :compact, false)
     plus = compact ? "+" : " + "
     minus = compact ? "-" : " - "
@@ -128,6 +128,7 @@ function show(io::IO, x::M)
 
     first && show(io, x.len)
 end
+
 
 ##############################################################################
 
