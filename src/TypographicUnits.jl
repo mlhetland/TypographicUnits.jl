@@ -1,25 +1,25 @@
 __precompile__(false)
 
 module TypographicUnits
+
 export pt, bp, pc, dd, cc, nd, nc, sp, em, ex, px, en
 
 using Unitful
 using Unitful: inch, Length
-import Base: +, *, -, /, show
 
 
 ## Absolute typographic units ################################################
 
 # (Based on LaTeX values, cf. https://en.wikibooks.org/wiki/LaTeX/Lengths)
 
-@unit pt "pt" Point       100inch//7227  false
-@unit bp "bp" BigPoint       inch//72    false
-@unit pc "pc" Pica           12pt        false
-@unit dd "dd" Didôt        1238pt//1157  false
-@unit cc "cc" Cîcero           dd//12    false
-@unit nd "nd" NewDidôt      685pt//642   false
-@unit nc "nc" NewCicero    1370pt//107   false
-@unit sp "sp" ScaledPoint      pt//65536 false
+@unit pt    "pt"       Point         (100//7227)inch    false
+@unit bp    "bp"       BigPoint      (1//72)inch        false
+@unit pc    "pc"       Pica          12pt               false
+@unit dd    "dd"       Didôt         (1238//1157)pt     false
+@unit cc    "cc"       Cîcero        (1//12)dd          false
+@unit nd    "nd"       NewDidôt      (685//642)pt       false
+@unit nc    "nc"       NewCicero     (1370//107)pt      false
+@unit sp    "sp"       ScaledPoint   (1//65536)pt       false
 
 
 ## Relative typographic units ################################################
@@ -32,10 +32,10 @@ import Base: +, *, -, /, show
 @dimension 𝐄𝐗 "𝐄𝐗" ExLength
 @dimension 𝐏𝐗 "𝐏𝐗" PxLength
 
-@refunit   em "em" Em 𝐄𝐌    false
-@refunit   ex "ex" Ex 𝐄𝐗    false
-@refunit   px "px" Px 𝐏𝐗    false
-@unit      en "en" En em//2 false
+@refunit em    "em"       Em    𝐄𝐌          false
+@refunit ex    "ex"       Ex    𝐄𝐗          false
+@refunit px    "px"       Px    𝐏𝐗          false
+@unit    en    "en"       En    (1//2)em    false
 
 
 ## A mixture of incommensurable length-like values ###########################
@@ -67,6 +67,8 @@ M(x::PxLength) = M(0pt, 0em, 0ex,   x)
 
 ## Some limited mixed arithmetic #############################################
 
+import Base: +, *, -, /
+
 +(x::M, y::M)    = M(getfields(x) .+ getfields(y)...)
 -(x::M, y::M)    = M(getfields(x) .- getfields(y)...)
 -(x::M)          = M(.- getfields(x)...)
@@ -80,8 +82,8 @@ M(x::PxLength) = M(0pt, 0em, 0ex,   x)
 # to a MixedLength may not be altogether straightforward. Instead, we'll just
 # hard-code the operators we need:
 
-const LengthNames = (:Length, :EmLength, :ExLength, :PxLength, :M)
-for S in LengthNames, T in LengthNames
+const TYPO_LENGTHS = (:Length, :EmLength, :ExLength, :PxLength, :M)
+for S in TYPO_LENGTHS, T in TYPO_LENGTHS
     S == T && continue
     @eval +(x::$S, y::$T) = M(x) + M(y)
     @eval -(x::$S, y::$T) = M(x) - M(y)
@@ -95,15 +97,16 @@ end
 
 import Base: float
 
-for func in [:float]
+for func in (:float,)
     @eval $func(x::MixedLength) = MixedLength($func.(getfields(x))...)
 end
 
 
 ## Pretty-printing ###########################################################
 
-function show(io::IO, x::M)
+import Base: show
 
+function show(io::IO, x::M)
     compact = get(io, :compact, false)
     plus = compact ? "+" : " + "
     minus = compact ? "-" : " - "
@@ -119,15 +122,16 @@ function show(io::IO, x::M)
             first = false
         end
     end
-    first && show(io, x.len)
 
+    first && show(io, x.len)
 end
 
 ##############################################################################
 
-# Currently (v. 0.7.0), the Unitful.jl promotion implementation doesn't work
+# Currently (v0.7.0), the Unitful.jl promotion implementation doesn't work
 # for more than three values [1], so here's a local alternative, sidestepping
 # much of the promotion machinery.
+#
 # [1]: https://github.com/ajkeller34/Unitful.jl/issues/119
 _promote(x...) = (T=promote_type(map(typeof, x)...); map(y->convert(T, y), x))
 
