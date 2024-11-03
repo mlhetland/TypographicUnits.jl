@@ -1,7 +1,7 @@
 # TypographicUnits
 
 A supplemental units package for
-[Unitful](https://github.com/ajkeller34/Unitful.jl), for dealing with
+[Unitful](https://github.com/PainterQubits/Unitful.jl), for dealing with
 typographic units. For example:
 
 ```jl
