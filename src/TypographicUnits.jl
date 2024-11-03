@@ -1,4 +1,5 @@
-__precompile__()
+__precompile__(false)
+
 module TypographicUnits
 export pt, bp, pc, dd, cc, nd, nc, sp, em, ex, px, en
 
