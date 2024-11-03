@@ -1,5 +1,3 @@
-__precompile__(false)
-
 module TypographicUnits
 
 export pt, bp, pc, dd, cc, nd, nc, sp, em, ex, px, en
@@ -51,14 +49,6 @@ struct MixedLength{
     exs::X
     pxs::P
 end
-
-MixedLength(len::L, ems::M, exs::X, pxs::P) where {
-    L <: Length{<:Real},
-    M <: EmLength{<: Real},
-    X <: ExLength{<: Real},
-    P <: PxLength{<: Real},
-} =
-    MixedLength{L, M, X, P}(len, ems, exs, pxs)
 
 getfields(x::MixedLength) = x.len, x.ems, x.exs, x.pxs
 
