@@ -22,7 +22,7 @@ using Unitful: inch, Length
 
 ## Relative typographic units ################################################
 
-# The magnitudes of the units em, ex and px are unknown, and so lenghts
+# The magnitudes of the units em, ex and px are unknown, and so lengths
 # measured in these units are incommensurable with other lengths, and with
 # each other. Therefore they are each given a separate length-like dimension.
 
@@ -42,7 +42,7 @@ struct MixedLength{
     L <: Length{<:Real},
     M <: EmLength{<: Real},
     X <: ExLength{<: Real},
-    P<: PxLength{<: Real},
+    P <: PxLength{<: Real},
 } <: Number
     len::L
     ems::M
@@ -52,6 +52,7 @@ end
 
 getfields(x::MixedLength) = x.len, x.ems, x.exs, x.pxs
 
+# MixedLength constructors from single values using multiple dispatch
 MixedLength(x::Length)   = MixedLength(x, 0em, 0ex, 0px)
 MixedLength(x::EmLength) = MixedLength(0pt, x, 0ex, 0px)
 MixedLength(x::ExLength) = MixedLength(0pt, 0em, x, 0px)
@@ -129,8 +130,9 @@ const localunits = copy(Unitful.basefactors)
 const localpromotion = copy(Unitful.promotion)
 function __init__()
     merge!(Unitful.basefactors, localunits)
-    # TODO: do we need this promotion step?
-    merge!(Unitful.promotion, localpromotion)  # only if you've used @dimension
+
+    # Required as we have used @dimension
+    merge!(Unitful.promotion, localpromotion)
 
     # Register extension to Unitful.jl
     Unitful.register(TypographicUnits)

@@ -14,8 +14,6 @@ end
         # relative = (em, ex, px, en)
 
         @testset "mixed relative and absolute units (lengths)" begin
-            # TODO: test that it errors when you try to add something else that isn't a unit
-
             # for x in absolute, y in absolute
             #     (3.4x + 2y//9)/4
             # end
@@ -401,6 +399,15 @@ end
                 @test 5px//15 - 1sp + rationalize(2.4)px == (-1//65536)pt + (41//15)px  # 5y//15 - 1x + 2.4y = -1.52587890625e-5 pt + 2.7333333333333334 px
             end
         end
+    end
+
+    @testset "errors on arithmetic with non-compatible units" begin
+        @test_throws Unitful.DimensionError 2kg + 5em
+        @test_throws Unitful.DimensionError 5em + 2N
+
+        # Adding length-like units to typographic units is allowed
+        @test 2pt + 3cm == (22189//254)pt
+        @test 2pt + 3cm + 5em == TypographicUnits.MixedLength((22189//254)pt, 5em, 0ex, 0px)
     end
 
     @testset "show typographic units" begin
