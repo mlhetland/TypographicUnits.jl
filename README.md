@@ -1,7 +1,9 @@
 # TypographicUnits
 
+[![Build Status](https://github.com/mlhetland/TypographicUnits.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/mlhetland/TypographicUnits.jl/actions/workflows/CI.yml?query=branch%3Amaster)
+
 A supplemental units package for
-[Unitful](https://github.com/ajkeller34/Unitful.jl), for dealing with
+[Unitful](https://github.com/PainterQubits/Unitful.jl), for dealing with
 typographic units. For example:
 
 ```jl
