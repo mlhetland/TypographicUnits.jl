@@ -1,7 +1,7 @@
 name = "TypographicUnits"
 uuid = "3ba834b2-aae6-11e8-1661-67e72b16bbb0"
-authors = ["Magnus Lie Hetland <magnus@hetland.org>"]
-version = "0.1.0"
+authors = ["Magnus Lie Hetland <magnus@hetland.org>", "Jake W. Ireland <jakewilliami@icloud.com>"]
+version = "1.0.0"
 
 [deps]
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
